@@ -1,0 +1,33 @@
+managed implementation in class zbp_i_gp_tr_m unique;
+
+define behavior for ZI_GP_TR_M alias Travel
+persistent table zgp_tr
+etag master last_changed_at
+lock master
+{
+
+    field ( readonly, numbering : managed ) mykey;
+
+    field ( readonly ) travel_id;
+
+    field ( readonly ) last_changed_at, last_changed_by, created_at, created_by;
+
+    field ( mandatory ) agency_id, overall_status, booking_fee, currency_code;
+
+    field ( mandatory ) Begin_Date, End_Date, Customer_ID;
+
+  create;
+  update;
+  delete;
+
+    action ( features : instance ) acceptTravel result [1] $self;
+
+  validation validateCustomer on save { field customer_id; }
+  validation validateDates on save { field begin_date, end_date; }
+  validation validateAgency on save
+  { field agency_id; }
+
+    determination CalculateTravelKey on modify
+    { create; }
+
+}
